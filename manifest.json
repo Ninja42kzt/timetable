@@ -1,0 +1,18 @@
+{
+  "name": "CSF 2.2 Timetable",
+  "short_name": "CSF 2.2",
+  "description": "Weekly timetable for CSF 2.2",
+  "start_url": "./timetable.html",
+  "display": "standalone",
+  "background_color": "#0e0e14",
+  "theme_color": "#0e0e14",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
