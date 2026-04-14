@@ -1,4 +1,4 @@
-const CACHE = 'csf22-v1';
+const CACHE = 'csf22-v2';
 const ASSETS = [
   './timetable.html',
   './manifest.json',
