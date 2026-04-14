@@ -12,461 +12,289 @@
 <link rel="manifest" href="manifest.json">
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --bg: #0e0e14;
-    --bg2: #16161f;
-    --bg3: #1e1e2a;
-    --border: rgba(255,255,255,0.07);
-    --text: #f0eeff;
-    --muted: #7e7d99;
-    --accent: #7f77dd;
-    --accent2: #5dcaa5;
-    --accent3: #ef9f27;
-    --class-bg: rgba(55,138,221,0.12);
-    --class-border: #378ADD;
-    --class-text: #85B7EB;
-    --deep-bg: rgba(127,119,221,0.12);
-    --deep-border: #7f77dd;
-    --deep-text: #AFA9EC;
-    --workout-bg: rgba(99,153,34,0.12);
-    --workout-border: #639922;
-    --workout-text: #97C459;
-    --routine-bg: rgba(136,135,128,0.08);
-    --routine-border: #5F5E5A;
-    --routine-text: #888780;
-    --rest-bg: rgba(186,117,23,0.12);
-    --rest-border: #BA7517;
-    --rest-text: #FAC775;
-    --done-opacity: 0.38;
-    --radius: 10px;
-    --trans: 0.18s ease;
-  }
-  [data-theme="light"] {
-    --bg: #f5f4f0;
-    --bg2: #ffffff;
-    --bg3: #ebebea;
-    --border: rgba(0,0,0,0.08);
-    --text: #1a1a2e;
-    --muted: #8a8898;
-    --accent: #534AB7;
-    --class-bg: #E6F1FB;
-    --class-border: #185FA5;
-    --class-text: #0C447C;
-    --deep-bg: #EEEDFE;
-    --deep-border: #534AB7;
-    --deep-text: #3C3489;
-    --workout-bg: #EAF3DE;
-    --workout-border: #3B6D11;
-    --workout-text: #27500A;
-    --routine-bg: #F1EFE8;
-    --routine-border: #5F5E5A;
-    --routine-text: #444441;
-    --rest-bg: #FAEEDA;
-    --rest-border: #854F0B;
-    --rest-text: #633806;
-  }
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  html { height: 100%; }
-  body {
-    font-family: 'DM Sans', sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    min-height: 100%;
-    padding-bottom: 2rem;
-    transition: background var(--trans), color var(--trans);
-  }
-  header {
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    background: var(--bg);
-    border-bottom: 1px solid var(--border);
-    padding: 0.75rem 1rem;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    backdrop-filter: blur(12px);
-  }
-  .logo {
-    font-family: 'Space Mono', monospace;
-    font-size: 13px;
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    color: var(--accent);
-  }
-  .logo span { color: var(--muted); font-weight: 400; }
-  .header-right { display: flex; align-items: center; gap: 10px; }
-  .theme-btn {
-    width: 32px; height: 32px;
-    border-radius: 50%;
-    border: 1px solid var(--border);
-    background: var(--bg2);
-    cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 15px;
-    transition: background var(--trans), border var(--trans);
-  }
-  .theme-btn:hover { background: var(--bg3); }
-  .progress-pill {
-    font-size: 11px;
-    font-family: 'Space Mono', monospace;
-    color: var(--muted);
-    background: var(--bg3);
-    padding: 4px 10px;
-    border-radius: 20px;
-    border: 1px solid var(--border);
-  }
-  .progress-pill b { color: var(--accent2); }
-  .day-nav {
-    display: flex;
-    gap: 6px;
-    padding: 0.75rem 1rem;
-    overflow-x: auto;
-    scrollbar-width: none;
-    border-bottom: 1px solid var(--border);
-    background: var(--bg);
-  }
-  .day-nav::-webkit-scrollbar { display: none; }
-  .day-btn {
-    flex-shrink: 0;
-    padding: 6px 14px;
-    border-radius: 20px;
-    border: 1px solid var(--border);
-    background: transparent;
-    color: var(--muted);
-    font-family: 'DM Sans', sans-serif;
-    font-size: 13px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all var(--trans);
-    white-space: nowrap;
-  }
-  .day-btn.active {
-    background: var(--accent);
-    color: #fff;
-    border-color: var(--accent);
-  }
-  .day-btn:hover:not(.active) { border-color: var(--accent); color: var(--text); }
-  .legend {
-    display: flex; flex-wrap: wrap; gap: 8px;
-    padding: 0.75rem 1rem;
-    border-bottom: 1px solid var(--border);
-  }
-  .leg { display: flex; align-items: center; gap: 5px; font-size: 11px; color: var(--muted); }
-  .dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
-  .blocks { padding: 0.75rem 1rem; display: flex; flex-direction: column; gap: 6px; }
-  .block {
-    border-radius: var(--radius);
-    border-left: 3px solid transparent;
-    overflow: hidden;
-    transition: opacity var(--trans);
-  }
-  .block.done { opacity: var(--done-opacity); }
-  .block-header {
-    display: flex;
-    align-items: flex-start;
-    gap: 10px;
-    padding: 10px 12px;
-    cursor: pointer;
-    user-select: none;
-  }
-  .block-check {
-    width: 18px; height: 18px;
-    border-radius: 50%;
-    border: 1.5px solid currentColor;
-    flex-shrink: 0;
-    margin-top: 1px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 10px;
-    transition: all var(--trans);
-    opacity: 0.5;
-  }
-  .block.done .block-check { opacity: 1; background: currentColor; }
-  .block.done .block-check::after { content: '✓'; color: var(--bg); font-weight: 700; }
-  .block-main { flex: 1; min-width: 0; }
-  .block-time { font-size: 11px; font-weight: 600; font-family: 'Space Mono', monospace; margin-bottom: 2px; letter-spacing: 0.02em; }
-  .block-label { font-size: 14px; font-weight: 500; line-height: 1.3; }
-  .block-note { font-size: 12px; margin-top: 2px; opacity: 0.75; }
-  .expand-btn {
-    width: 22px; height: 22px;
-    border-radius: 50%;
-    border: 1px solid var(--border);
-    background: rgba(255,255,255,0.05);
-    cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 12px;
-    color: var(--muted);
-    flex-shrink: 0;
-    transition: all var(--trans);
-    margin-top: 1px;
-  }
-  [data-theme="light"] .expand-btn { background: rgba(0,0,0,0.04); }
-  .expand-btn:hover { background: rgba(255,255,255,0.1); }
-  .block-notes-area {
-    display: none;
-    padding: 0 12px 10px 40px;
-  }
-  .block-notes-area.open { display: block; }
-  .block-notes-area textarea {
-    width: 100%;
-    background: rgba(0,0,0,0.15);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    color: var(--text);
-    font-family: 'DM Sans', sans-serif;
-    font-size: 13px;
-    padding: 8px 10px;
-    resize: none;
-    min-height: 60px;
-    outline: none;
-    transition: border var(--trans);
-  }
-  [data-theme="light"] .block-notes-area textarea { background: rgba(0,0,0,0.04); }
-  .block-notes-area textarea:focus { border-color: var(--accent); }
-  .block-notes-area textarea::placeholder { color: var(--muted); }
-  .b-class { background: var(--class-bg); border-color: var(--class-border); }
-  .b-class .block-time, .b-class .block-check { color: var(--class-text); }
-  .b-class .block-label { color: var(--class-text); filter: brightness(1.3); }
-  [data-theme="light"] .b-class .block-label { filter: none; color: var(--class-border); }
-  .b-deep { background: var(--deep-bg); border-color: var(--deep-border); }
-  .b-deep .block-time, .b-deep .block-check { color: var(--deep-text); }
-  .b-deep .block-label { color: var(--deep-text); filter: brightness(1.3); }
-  [data-theme="light"] .b-deep .block-label { filter: none; color: var(--deep-border); }
-  .b-workout { background: var(--workout-bg); border-color: var(--workout-border); }
-  .b-workout .block-time, .b-workout .block-check { color: var(--workout-text); }
-  .b-workout .block-label { color: var(--workout-text); filter: brightness(1.3); }
-  [data-theme="light"] .b-workout .block-label { filter: none; color: var(--workout-border); }
-  .b-routine { background: var(--routine-bg); border-color: var(--routine-border); }
-  .b-routine .block-time, .b-routine .block-check { color: var(--routine-text); }
-  .b-routine .block-label { color: var(--routine-text); filter: brightness(1.3); }
-  [data-theme="light"] .b-routine .block-label { filter: none; color: var(--routine-border); }
-  .b-rest { background: var(--rest-bg); border-color: var(--rest-border); }
-  .b-rest .block-time, .b-rest .block-check { color: var(--rest-text); }
-  .b-rest .block-label { color: var(--rest-text); filter: brightness(1.3); }
-  [data-theme="light"] .b-rest .block-label { filter: none; color: var(--rest-border); }
-  .block-note { color: var(--muted); }
+:root{--bg:#0e0e14;--bg2:#16161f;--bg3:#1e1e2a;--border:rgba(255,255,255,0.07);--text:#f0eeff;--muted:#7e7d99;--accent:#7f77dd;--accent2:#5dcaa5;--class-bg:rgba(55,138,221,0.12);--class-border:#378ADD;--class-text:#85B7EB;--deep-bg:rgba(127,119,221,0.12);--deep-border:#7f77dd;--deep-text:#AFA9EC;--workout-bg:rgba(99,153,34,0.12);--workout-border:#639922;--workout-text:#97C459;--routine-bg:rgba(136,135,128,0.08);--routine-border:#5F5E5A;--routine-text:#888780;--rest-bg:rgba(186,117,23,0.12);--rest-border:#BA7517;--rest-text:#FAC775;--online-bg:rgba(93,202,165,0.12);--online-border:#1D9E75;--online-text:#5DCAA5;--done-opacity:0.35;--radius:10px;--trans:0.18s ease;}
+[data-theme="light"]{--bg:#f5f4f0;--bg2:#fff;--bg3:#ebebea;--border:rgba(0,0,0,0.08);--text:#1a1a2e;--muted:#8a8898;--accent:#534AB7;--class-bg:#E6F1FB;--class-border:#185FA5;--class-text:#0C447C;--deep-bg:#EEEDFE;--deep-border:#534AB7;--deep-text:#3C3489;--workout-bg:#EAF3DE;--workout-border:#3B6D11;--workout-text:#27500A;--routine-bg:#F1EFE8;--routine-border:#5F5E5A;--routine-text:#444441;--rest-bg:#FAEEDA;--rest-border:#854F0B;--rest-text:#633806;--online-bg:#E1F5EE;--online-border:#0F6E56;--online-text:#085041;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{height:100%;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100%;padding-bottom:4rem;transition:background var(--trans),color var(--trans);}
+header{position:sticky;top:0;z-index:100;background:var(--bg);border-bottom:1px solid var(--border);padding:0.75rem 1rem;display:flex;align-items:center;justify-content:space-between;backdrop-filter:blur(12px);}
+.logo{font-family:'Space Mono',monospace;font-size:13px;font-weight:700;letter-spacing:0.08em;color:var(--accent);}
+.logo span{color:var(--muted);font-weight:400;}
+.hdr-right{display:flex;align-items:center;gap:8px;}
+.icon-btn{width:32px;height:32px;border-radius:50%;border:1px solid var(--border);background:var(--bg2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:15px;transition:background var(--trans);}
+.icon-btn:hover{background:var(--bg3);}
+.pill{font-size:11px;font-family:'Space Mono',monospace;color:var(--muted);background:var(--bg3);padding:4px 10px;border-radius:20px;border:1px solid var(--border);}
+.pill b{color:var(--accent2);}
+.day-nav{display:flex;gap:6px;padding:0.75rem 1rem;overflow-x:auto;scrollbar-width:none;border-bottom:1px solid var(--border);}
+.day-nav::-webkit-scrollbar{display:none;}
+.day-btn{flex-shrink:0;padding:6px 14px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--muted);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;transition:all var(--trans);}
+.day-btn.active{background:var(--accent);color:#fff;border-color:var(--accent);}
+.day-btn:hover:not(.active){border-color:var(--accent);color:var(--text);}
+.legend{display:flex;flex-wrap:wrap;gap:8px;padding:0.6rem 1rem;border-bottom:1px solid var(--border);}
+.leg{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--muted);}
+.dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.blocks{padding:0.75rem 1rem;display:flex;flex-direction:column;gap:6px;}
+.block{border-radius:var(--radius);border-left:3px solid transparent;overflow:hidden;transition:opacity var(--trans);}
+.block.done{opacity:var(--done-opacity);}
+.block-header{display:flex;align-items:flex-start;gap:10px;padding:10px 12px;cursor:pointer;user-select:none;}
+.block-check{width:18px;height:18px;border-radius:50%;border:1.5px solid currentColor;flex-shrink:0;margin-top:2px;display:flex;align-items:center;justify-content:center;font-size:10px;transition:all var(--trans);opacity:0.5;}
+.block.done .block-check{opacity:1;background:currentColor;}
+.block.done .block-check::after{content:'✓';color:var(--bg);font-weight:700;}
+.block-main{flex:1;min-width:0;}
+.block-time{font-size:11px;font-weight:600;font-family:'Space Mono',monospace;margin-bottom:2px;letter-spacing:0.02em;}
+.block-label{font-size:14px;font-weight:500;line-height:1.3;}
+.block-sub{font-size:12px;margin-top:2px;color:var(--muted);}
+.block-note-preview{font-size:12px;margin-top:3px;color:var(--accent2);}
+.act-btn{width:22px;height:22px;border-radius:50%;border:1px solid var(--border);background:rgba(255,255,255,0.05);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--muted);flex-shrink:0;margin-top:2px;transition:all var(--trans);}
+[data-theme="light"] .act-btn{background:rgba(0,0,0,0.04);}
+.act-btn:hover{background:rgba(255,255,255,0.12);}
+.block-expand{display:none;padding:0 12px 12px 40px;flex-direction:column;gap:10px;}
+.block-expand.open{display:flex;}
+.exp-label{font-size:11px;color:var(--muted);font-family:'Space Mono',monospace;letter-spacing:0.04em;margin-bottom:3px;}
+.exp-input,.exp-textarea{background:rgba(0,0,0,0.15);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:13px;padding:7px 10px;outline:none;transition:border var(--trans);width:100%;}
+[data-theme="light"] .exp-input,[data-theme="light"] .exp-textarea{background:rgba(0,0,0,0.04);}
+.exp-input:focus,.exp-textarea:focus{border-color:var(--accent);}
+.exp-textarea{resize:none;min-height:72px;}
+.exp-input::placeholder,.exp-textarea::placeholder{color:var(--muted);}
+.b-class{background:var(--class-bg);border-color:var(--class-border);}
+.b-class .block-time,.b-class .block-check{color:var(--class-text);}
+.b-class .block-label{color:var(--class-text);filter:brightness(1.3);}
+[data-theme="light"] .b-class .block-label{filter:none;color:var(--class-border);}
+.b-online{background:var(--online-bg);border-color:var(--online-border);}
+.b-online .block-time,.b-online .block-check{color:var(--online-text);}
+.b-online .block-label{color:var(--online-text);}
+[data-theme="light"] .b-online .block-label{color:var(--online-border);}
+.b-deep{background:var(--deep-bg);border-color:var(--deep-border);}
+.b-deep .block-time,.b-deep .block-check{color:var(--deep-text);}
+.b-deep .block-label{color:var(--deep-text);filter:brightness(1.3);}
+[data-theme="light"] .b-deep .block-label{filter:none;color:var(--deep-border);}
+.b-workout{background:var(--workout-bg);border-color:var(--workout-border);}
+.b-workout .block-time,.b-workout .block-check{color:var(--workout-text);}
+.b-workout .block-label{color:var(--workout-text);filter:brightness(1.3);}
+[data-theme="light"] .b-workout .block-label{filter:none;color:var(--workout-border);}
+.b-routine{background:var(--routine-bg);border-color:var(--routine-border);}
+.b-routine .block-time,.b-routine .block-check{color:var(--routine-text);}
+.b-routine .block-label{color:var(--routine-text);filter:brightness(1.3);}
+[data-theme="light"] .b-routine .block-label{filter:none;color:var(--routine-border);}
+.b-rest{background:var(--rest-bg);border-color:var(--rest-border);}
+.b-rest .block-time,.b-rest .block-check{color:var(--rest-text);}
+.b-rest .block-label{color:var(--rest-text);filter:brightness(1.3);}
+[data-theme="light"] .b-rest .block-label{filter:none;color:var(--rest-border);}
 </style>
 </head>
 <body>
 <header>
   <div class="logo">CSF 2.2 <span>/ Week</span></div>
-  <div class="header-right">
-    <div class="progress-pill" id="progress-pill"><b>0</b> done</div>
-    <button class="theme-btn" id="theme-btn" title="Toggle theme">🌙</button>
+  <div class="hdr-right">
+    <div class="pill" id="progress-pill"><b>0</b> done</div>
+    <button class="icon-btn" id="theme-btn" title="Toggle theme">🌙</button>
   </div>
 </header>
-
 <nav class="day-nav" id="nav"></nav>
-
 <div class="legend">
-  <div class="leg"><div class="dot" style="background:#378ADD"></div> Class</div>
-  <div class="leg"><div class="dot" style="background:#7f77dd"></div> Deep work</div>
-  <div class="leg"><div class="dot" style="background:#639922"></div> Workout</div>
-  <div class="leg"><div class="dot" style="background:#BA7517"></div> Rest</div>
-  <div class="leg"><div class="dot" style="background:#888780"></div> Routine</div>
+  <div class="leg"><div class="dot" style="background:#378ADD"></div>Class</div>
+  <div class="leg"><div class="dot" style="background:#5DCAA5"></div>Online</div>
+  <div class="leg"><div class="dot" style="background:#7f77dd"></div>Deep work</div>
+  <div class="leg"><div class="dot" style="background:#639922"></div>Workout</div>
+  <div class="leg"><div class="dot" style="background:#BA7517"></div>Rest</div>
+  <div class="leg"><div class="dot" style="background:#888780"></div>Routine</div>
 </div>
-
 <div class="blocks" id="blocks"></div>
-
 <script>
-const DAYS = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+const DAYS=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+const SCHEDULE={
+Mon:[
+  {id:'m0',time:'5:00–5:30',label:'Wake up + hygiene + breakfast',type:'routine',sub:''},
+  {id:'m1',time:'5:30–7:30',label:'Deep work 1 — Secret project',type:'deep',sub:'AI machine build — focused session, no distractions'},
+  {id:'m2',time:'7:30–8:30',label:'Morning workout',type:'workout',sub:'Gym / calisthenics'},
+  {id:'m3',time:'8:00–10:00',label:'Digital Electronics',type:'class',sub:'LAB 5 / LR 2'},
+  {id:'m4',time:'10:00–12:00',label:'Free — JS basics + review',type:'deep',sub:'After Digital Electronics — 30 min review then JS tutorial (freeCodeCamp)'},
+  {id:'m5',time:'12:00–14:00',label:'Entrepreneur Business',type:'class',sub:'LR 2 — lighter class'},
+  {id:'m6',time:'14:00–16:00',label:'Deep work 2 — JavaScript',type:'deep',sub:'Variables, functions, DOM · The Odin Project'},
+  {id:'m7',time:'16:00–18:00',label:'Computer Systems',type:'class',sub:'LR 2 — architecture, ties to C/C++'},
+  {id:'m8',time:'18:00–19:00',label:'Dinner + break',type:'routine',sub:'No screens — decompress'},
+  {id:'m9',time:'19:00–20:00',label:'Music production / voice work',type:'deep',sub:'Game character voices & OST'},
+  {id:'m10',time:'20:00–21:30',label:'Tech Crush — AI Learning',type:'deep',sub:'AI session 8–9:30pm · take notes for secret project'},
+  {id:'m11',time:'21:30–22:00',label:'Review day + plan tomorrow',type:'routine',sub:'Write 3 things you learned today'},
+  {id:'m12',time:'22:00–23:00',label:'Wind-down',type:'rest',sub:'No screens after 22:30'},
+  {id:'m13',time:'23:00',label:'Sleep',type:'rest',sub:'6 hrs — wake 5am'},
+],
+Tue:[
+  {id:'t0',time:'5:00–5:30',label:'Wake up + hygiene + breakfast',type:'routine',sub:''},
+  {id:'t1',time:'5:30–7:00',label:'Deep work 1 — Python tutorial',type:'deep',sub:'Control flow, loops, functions · Python for Everybody / CS50P'},
+  {id:'t2',time:'7:00–8:00',label:'Information Technology',type:'class',sub:'CL 3'},
+  {id:'t3',time:'8:00–10:00',label:'Computer Systems',type:'class',sub:'LR 2 — OS + architecture, ties to C'},
+  {id:'t4',time:'10:00–14:00',label:'Free block — review + Python practice',type:'deep',sub:'Heavy morning — review IT & Computer Systems, then build a Python script'},
+  {id:'t5',time:'14:00–16:00',label:'Criminalistics',type:'class',sub:'CL 3 — moderate difficulty'},
+  {id:'t6',time:'16:00–18:00',label:'Information Technology',type:'class',sub:'LR 5'},
+  {id:'t7',time:'18:00–19:00',label:'Dinner + break',type:'routine',sub:'No screens'},
+  {id:'t8',time:'19:00–20:00',label:'Deep work 2 — Python practice',type:'deep',sub:'Build small scripts — file reader, password generator, web scraper'},
+  {id:'t9',time:'20:00–21:00',label:'Blender / game engine',type:'deep',sub:'3D modelling or game engine basics'},
+  {id:'t10',time:'21:00–22:00',label:'Review day + plan tomorrow',type:'routine',sub:'Write 3 things you learned today'},
+  {id:'t11',time:'22:00–23:00',label:'Wind-down',type:'rest',sub:'No screens after 22:30'},
+  {id:'t12',time:'23:00',label:'Sleep',type:'rest',sub:'6 hrs — wake 5am'},
+],
+Wed:[
+  {id:'w0',time:'5:00–5:30',label:'Wake up + hygiene + breakfast',type:'routine',sub:''},
+  {id:'w1',time:'5:30–7:30',label:'Deep work 1 — Secret project',type:'deep',sub:'AI machine — longest morning session'},
+  {id:'w2',time:'7:30–8:00',label:'Prep + commute',type:'routine',sub:'Listen to a tech podcast'},
+  {id:'w3',time:'8:00–10:00',label:'Digital Electronics',type:'class',sub:'CL 3 — heavy theory'},
+  {id:'w4',time:'10:00–12:00',label:'Computer & Network Security',type:'class',sub:'LR 2 — hard, front-row energy'},
+  {id:'w5',time:'12:00–13:00',label:'Systems Programming',type:'class',sub:'CL 3 — directly uses C/C++'},
+  {id:'w6',time:'13:00–14:00',label:'Lunch + free — C basics',type:'deep',sub:'Systems Programming is hard — eat then 30 min C tutorial (pointers, memory)'},
+  {id:'w7',time:'14:00–19:00',label:'Deep work 2 — C language + Blender',type:'deep',sub:'C arrays, structs, pointers · then Blender game assets'},
+  {id:'w8',time:'19:00–20:00',label:'Ethical Hacking',type:'online',sub:'Online class — 7–8pm · very relevant to CTF'},
+  {id:'w9',time:'20:00–21:00',label:'Music production / voice work',type:'deep',sub:'Game character voices'},
+  {id:'w10',time:'21:30–23:00',label:'Tech Crush — AI Learning',type:'deep',sub:'AI session 9:30–11pm · connect to secret project'},
+  {id:'w11',time:'23:00',label:'Sleep',type:'rest',sub:'6 hrs — wake 5am'},
+],
+Thu:[
+  {id:'th0',time:'5:00–5:30',label:'Wake up + hygiene + breakfast',type:'routine',sub:''},
+  {id:'th1',time:'5:30–7:00',label:'Deep work 1 — C++ tutorial',type:'deep',sub:'OOP in C++ — classes, inheritance · learncpp.com'},
+  {id:'th2',time:'7:00–8:00',label:'Morning workout',type:'workout',sub:'Gym / calisthenics'},
+  {id:'th3',time:'7:00–8:00',label:'Digital Electronics',type:'class',sub:'CL 3 — 1 hr session'},
+  {id:'th4',time:'8:00–10:00',label:'Computer & Network Security',type:'class',sub:'CL 3 — connect to CTF skills'},
+  {id:'th5',time:'10:00–11:00',label:'Free — CNS deep review',type:'routine',sub:'Hardest class today — review notes + practice problems'},
+  {id:'th6',time:'11:00–13:00',label:'Entrepreneur Business',type:'class',sub:'LAB 14 — lighter, good mental break'},
+  {id:'th7',time:'13:00–15:00',label:'Lunch + free — C++ practice',type:'deep',sub:'Apply this morning\'s C++ lesson — write a small OOP program'},
+  {id:'th8',time:'15:00–18:00',label:'Systems Programming',type:'class',sub:'LR 8 — C/C++ in action'},
+  {id:'th9',time:'18:00–19:00',label:'Dinner + break',type:'routine',sub:''},
+  {id:'th10',time:'19:00–20:00',label:'Game dev — engine exploration',type:'deep',sub:'Godot or Unreal basics · pick one and commit'},
+  {id:'th11',time:'20:00–21:00',label:'Music production / voice work',type:'deep',sub:'Character voices or game OST'},
+  {id:'th12',time:'21:00–22:00',label:'Review day + plan tomorrow',type:'routine',sub:'Write 3 things learned'},
+  {id:'th13',time:'22:00–23:00',label:'Wind-down',type:'rest',sub:'No screens after 22:30'},
+  {id:'th14',time:'23:00',label:'Sleep',type:'rest',sub:'6 hrs — wake 5am'},
+],
+Fri:[
+  {id:'f0',time:'5:00–5:30',label:'Wake up + hygiene + breakfast',type:'routine',sub:''},
+  {id:'f1',time:'5:30–7:30',label:'Deep work 1 — Secret project',type:'deep',sub:'AI machine — apply this week\'s Python + AI learning'},
+  {id:'f2',time:'7:30–9:00',label:'Free — JS practice',type:'deep',sub:'Build a small JS project before class (to-do app, calculator)'},
+  {id:'f3',time:'9:00–11:00',label:'Criminalistics',type:'class',sub:'CL 3'},
+  {id:'f4',time:'11:00–12:00',label:'Free — Criminalistics review + SQL',type:'routine',sub:'30 min notes, 30 min SQL basics (W3Schools)'},
+  {id:'f5',time:'12:00–14:00',label:'Computer & Network Security',type:'class',sub:'LR 7 — hard class, stay sharp'},
+  {id:'f6',time:'14:00–16:00',label:'Deep work 2 — Python tutorial',type:'deep',sub:'Python OOP — classes, modules, file I/O'},
+  {id:'f7',time:'16:00–18:00',label:'Information Technology',type:'class',sub:'LR 8 — end of week, stay focused'},
+  {id:'f8',time:'18:00–19:00',label:'Dinner + break',type:'routine',sub:'End of school week — earned it'},
+  {id:'f9',time:'19:00–20:00',label:'Ethical Hacking',type:'online',sub:'Online class — 7–8pm · reinforce Wed session'},
+  {id:'f10',time:'20:00–21:30',label:'Tech Crush — AI Learning',type:'deep',sub:'AI session 8–9:30pm'},
+  {id:'f11',time:'21:30–22:00',label:'Review week + plan weekend',type:'routine',sub:'What did you build this week?'},
+  {id:'f12',time:'22:00–23:00',label:'Wind-down',type:'rest',sub:'Intentional IG time if needed'},
+  {id:'f13',time:'23:00',label:'Sleep',type:'rest',sub:'6 hrs — wake 5am'},
+],
+Sat:[
+  {id:'s0',time:'5:00–5:30',label:'Wake up + breakfast',type:'routine',sub:'Slower morning'},
+  {id:'s1',time:'5:30–8:00',label:'Deep work 1 — Secret project',type:'deep',sub:'Longest session — AI machine, no interruptions'},
+  {id:'s2',time:'8:00–9:30',label:'Workout',type:'workout',sub:'Longer session — weights + cardio'},
+  {id:'s3',time:'9:30–10:00',label:'Shower + meal prep',type:'routine',sub:''},
+  {id:'s4',time:'10:00–12:00',label:'C++ — game systems',type:'deep',sub:'Game loop, collision, physics basics · Unreal C++ tutorial'},
+  {id:'s5',time:'12:00–13:00',label:'Lunch + rest',type:'routine',sub:''},
+  {id:'s6',time:'13:00–15:00',label:'Deep work 2 — C deep dive',type:'deep',sub:'Memory management, pointers, structs — unlocks C++'},
+  {id:'s7',time:'15:00–17:00',label:'Music production + voice work',type:'deep',sub:'Character voices + OST — game audio pipeline'},
+  {id:'s8',time:'17:00–18:00',label:'Free time / IG (intentional)',type:'routine',sub:'Scheduled scroll — 1 hour max, not reactive'},
+  {id:'s9',time:'18:00–19:00',label:'Dinner + break',type:'routine',sub:''},
+  {id:'s10',time:'19:00–21:00',label:'Deep work 3 — JS + SQL mini app',type:'deep',sub:'Build a full mini web app — JS frontend + SQL backend concept'},
+  {id:'s11',time:'21:00–23:00',label:'Wind-down + week review',type:'rest',sub:'Write what you built this week'},
+  {id:'s12',time:'23:00',label:'Sleep',type:'rest',sub:'6 hrs — wake 5am'},
+],
+Sun:[
+  {id:'su0',time:'5:00–6:00',label:'Wake up + slow morning',type:'routine',sub:'Journal, breakfast — reflect on the week'},
+  {id:'su1',time:'6:00–8:00',label:'Deep work 1 — Secret project',type:'deep',sub:'AI machine — integrate this week\'s learning'},
+  {id:'su2',time:'8:00–10:00',label:'Full week review — all subjects',type:'routine',sub:'Hardest first: CNS → Systems Programming → Digital Electronics → rest'},
+  {id:'su3',time:'10:00–12:00',label:'Game dev — engine + Blender',type:'deep',sub:'Connect 3D assets to game engine — make something playable'},
+  {id:'su4',time:'12:00–13:00',label:'Lunch + rest',type:'routine',sub:''},
+  {id:'su5',time:'13:00–15:00',label:'Deep work 2 — Python or C++ project',type:'deep',sub:'Apply the week\'s tutorial progress to a real mini project'},
+  {id:'su6',time:'15:00–17:00',label:'Free time (intentional)',type:'routine',sub:'Walk, rest, IG — no guilt, earned recovery'},
+  {id:'su7',time:'17:00–19:00',label:'Plan full week ahead',type:'routine',sub:'Set language goals per day, CTF targets, note hard upcoming classes'},
+  {id:'su8',time:'19:00–20:00',label:'Dinner + break',type:'routine',sub:''},
+  {id:'su9',time:'20:00–21:00',label:'Music production — low intensity',type:'deep',sub:'Creative wind-down — sounds, voices, ambience'},
+  {id:'su10',time:'21:00–23:00',label:'Wind-down',type:'rest',sub:'Pack bag, set alarm, no screens after 22:30'},
+  {id:'su11',time:'23:00',label:'Sleep',type:'rest',sub:'6 hrs — wake 5am'},
+]};
 
-const SCHEDULE = {
-  Mon: [
-    { id:'mon0',  time:'5:00–5:30',  label:'Wake up + hygiene + breakfast', type:'routine', note:''},
-    { id:'mon1',  time:'5:30–7:30',  label:'Deep work 1 — Secret project', type:'deep', note:'AI machine build — focused session, no distractions'},
-    { id:'mon2',  time:'7:30–8:30',  label:'Morning workout', type:'workout', note:'Gym / calisthenics'},
-    { id:'mon3',  time:'8:30–9:00',  label:'Shower + prep', type:'routine', note:''},
-    { id:'mon4',  time:'9:00–11:00', label:'Digital Electronics', type:'class', note:'Class — heavy theory, take notes'},
-    { id:'mon5',  time:'11:00–12:00',label:'Free hour — Python basics', type:'deep', note:'Digital Electronics is hard — do 30 min review then 30 min Python tutorial'},
-    { id:'mon6',  time:'12:00–14:00',label:'Entrepreneur Business', type:'class', note:'LAB 5 — lighter class, stay engaged'},
-    { id:'mon7',  time:'14:00–16:00',label:'Deep work 2 — JavaScript fundamentals', type:'deep', note:'JS variables, functions, DOM basics · freeCodeCamp or The Odin Project'},
-    { id:'mon8',  time:'16:00–18:00',label:'Computer & Network Security', type:'class', note:'LR 2 — ties directly to your CTF + ethical hacking interest'},
-    { id:'mon9',  time:'18:00–19:00',label:'Dinner + break', type:'routine', note:'No screens — decompress'},
-    { id:'mon10', time:'19:00–20:00',label:'Music production / voice work', type:'deep', note:'Game character voices & OST'},
-    { id:'mon11', time:'20:00–21:30',label:'Tech Crush — AI Learning', type:'deep', note:'AI session 8–9:30pm · take notes for secret project'},
-    { id:'mon12', time:'21:30–22:00',label:'Review day + plan tomorrow', type:'routine', note:'Write 3 things you learned today'},
-    { id:'mon13', time:'22:00–23:00',label:'Wind-down', type:'rest', note:'No screens after 22:30'},
-    { id:'mon14', time:'23:00',       label:'Sleep', type:'rest', note:'6 hrs — wake 5am'},
-  ],
-  Tue: [
-    { id:'tue0',  time:'5:00–5:30',  label:'Wake up + hygiene + breakfast', type:'routine', note:''},
-    { id:'tue1',  time:'5:30–7:00',  label:'Deep work 1 — Python tutorial', type:'deep', note:'Control flow, loops, functions · Python for Everybody or CS50P'},
-    { id:'tue2',  time:'7:00–8:00',  label:'Information Technology', type:'class', note:'CL 3 — broad theory, good for general knowledge'},
-    { id:'tue3',  time:'8:00–9:00',  label:'Free hour — review IT lecture', type:'routine', note:'IT is moderate difficulty — rewrite key concepts in your own words'},
-    { id:'tue4',  time:'9:00–10:00', label:'Computer & Network Security', type:'class', note:'CL 3'},
-    { id:'tue5',  time:'10:00–11:00',label:'Free hour — CNS review + SQL intro', type:'deep', note:'CNS is hard — spend 40 min reviewing, 20 min on SQL basics (W3Schools)'},
-    { id:'tue6',  time:'11:00–13:00',label:'Ethical Hacking', type:'class', note:'CL 3 — very relevant to CTF, pay close attention'},
-    { id:'tue7',  time:'13:00–14:00',label:'Lunch + active rest', type:'routine', note:'Walk outside if possible — Ethical Hacking is intense'},
-    { id:'tue8',  time:'14:00–16:00',label:'Criminalistics', type:'class', note:'CL 3 — lighter load, good pacing'},
-    { id:'tue9',  time:'16:00–18:00',label:'Information Technology', type:'class', note:'LR 5'},
-    { id:'tue10', time:'18:00–19:00',label:'Dinner + break', type:'routine', note:'No screens'},
-    { id:'tue11', time:'19:00–20:00',label:'Deep work 2 — Python practice', type:'deep', note:'Build small scripts — file reader, password generator, web scraper'},
-    { id:'tue12', time:'20:00–21:00',label:'Ethical Hacking review + CTF', type:'deep', note:'Reinforce today\'s EH lecture — try a related CTF challenge'},
-    { id:'tue13', time:'21:00–22:00',label:'Review day + plan tomorrow', type:'routine', note:'Write 3 things you learned today'},
-    { id:'tue14', time:'22:00–23:00',label:'Wind-down', type:'rest', note:'No screens after 22:30'},
-    { id:'tue15', time:'23:00',       label:'Sleep', type:'rest', note:'6 hrs — wake 5am'},
-  ],
-  Wed: [
-    { id:'wed0',  time:'5:00–5:30',  label:'Wake up + hygiene + breakfast', type:'routine', note:''},
-    { id:'wed1',  time:'5:30–7:30',  label:'Deep work 1 — Secret project', type:'deep', note:'AI machine build — longest morning session this week'},
-    { id:'wed2',  time:'7:30–8:00',  label:'Prep + commute', type:'routine', note:'Listen to a tech podcast or audiobook'},
-    { id:'wed3',  time:'8:00–10:00', label:'Digital Electronics', type:'class', note:'CL 3 — heavy theory, annotate slides'},
-    { id:'wed4',  time:'10:00–12:00',label:'Computer Systems', type:'class', note:'LR 2 — architecture + OS internals, ties to C'},
-    { id:'wed5',  time:'12:00–13:00',label:'Systems Programming', type:'class', note:'CL 3 — directly uses C/C++, pay close attention'},
-    { id:'wed6',  time:'13:00–14:00',label:'Lunch + free hour — C basics', type:'deep', note:'Systems Programming is hard — eat then do 30 min C tutorial (pointers, memory)'},
-    { id:'wed7',  time:'14:00–16:00',label:'Ethical Hacking', type:'class', note:'CL 3'},
-    { id:'wed8',  time:'16:00–17:30',label:'Deep work 2 — C language tutorial', type:'deep', note:'C arrays, structs, pointers · CS50 or "Learn C the Hard Way"'},
-    { id:'wed9',  time:'17:30–18:30',label:'Dinner + break', type:'routine', note:''},
-    { id:'wed10', time:'18:30–20:00',label:'Blender — 3D modelling', type:'deep', note:'Game asset creation · follow Blender Guru or GDQuest'},
-    { id:'wed11', time:'20:00–21:00',label:'Music production / voice work', type:'deep', note:'Game character voices — record or design'},
-    { id:'wed11b',time:'21:30–23:00',label:'Tech Crush — AI Learning', type:'deep', note:'AI session 9:30–11pm · connect to secret project'},
-    { id:'wed12', time:'21:00–21:30',label:'Quick review + plan tomorrow', type:'routine', note:''},
-    { id:'wed13', time:'23:00',       label:'Sleep', type:'rest', note:'6 hrs — wake 5am'},
-  ],
-  Thu: [
-    { id:'thu0',  time:'5:00–5:30',  label:'Wake up + hygiene + breakfast', type:'routine', note:''},
-    { id:'thu1',  time:'5:30–7:00',  label:'Deep work 1 — C++ tutorial', type:'deep', note:'OOP in C++ — classes, inheritance · learncpp.com'},
-    { id:'thu2',  time:'7:00–8:00',  label:'Morning workout', type:'workout', note:'Gym / calisthenics'},
-    { id:'thu3',  time:'8:00–8:30',  label:'Shower + prep', type:'routine', note:''},
-    { id:'thu4',  time:'8:00–9:00',  label:'Digital Electronics', type:'class', note:'CL 3'},
-    { id:'thu5',  time:'8:30–9:00',  label:'Computer Systems', type:'class', note:'CL 3 — review C concepts from yesterday here'},
-    { id:'thu6',  time:'9:00–11:00', label:'Computer & Network Security', type:'class', note:'LR 7 — hard class, front-row energy'},
-    { id:'thu7',  time:'11:00–13:00',label:'Entrepreneur Business', type:'class', note:'LAB 14 — lighter, good mental break'},
-    { id:'thu8',  time:'13:00–15:00',label:'Lunch + free hour — CNS review', type:'deep', note:'CNS is the hardest today — 45 min deep review + practice problems, then eat'},
-    { id:'thu9',  time:'15:00–18:00',label:'Systems Programming', type:'class', note:'LR 8 — C/C++ in action, connect to your tutorial'},
-    { id:'thu10', time:'18:00–19:00',label:'Dinner + break', type:'routine', note:''},
-    { id:'thu11', time:'19:00–20:00',label:'Deep work 2 — game engine exploration', type:'deep', note:'Godot (free) or Unreal basics · pick one engine and stick to it'},
-    { id:'thu12', time:'20:00–21:00',label:'Music production / voice work', type:'deep', note:'Character voices or game OST'},
-    { id:'thu13', time:'21:00–22:00',label:'Review day + plan tomorrow', type:'routine', note:'Write 3 things learned'},
-    { id:'thu14', time:'22:00–23:00',label:'Wind-down', type:'rest', note:'No screens after 22:30'},
-    { id:'thu15', time:'23:00',       label:'Sleep', type:'rest', note:'6 hrs — wake 5am'},
-  ],
-  Fri: [
-    { id:'fri0',  time:'5:00–5:30',  label:'Wake up + hygiene + breakfast', type:'routine', note:''},
-    { id:'fri1',  time:'5:30–7:30',  label:'Deep work 1 — Secret project', type:'deep', note:'AI machine — apply this week\'s Python + AI learning'},
-    { id:'fri2',  time:'7:30–9:00',  label:'Free hour — JavaScript practice', type:'deep', note:'Light class day ahead — build a small JS project (to-do app, calculator)'},
-    { id:'fri3',  time:'9:00–11:00', label:'Criminalistics', type:'class', note:'CL 3 — moderate difficulty'},
-    { id:'fri4',  time:'11:00–12:00',label:'Free hour — Criminalistics review', type:'routine', note:'Medium difficulty — 30 min notes consolidation, 30 min SQL practice'},
-    { id:'fri5',  time:'12:00–14:00',label:'Computer Systems', type:'class', note:'LR 3 — architecture, connects to C/C++'},
-    { id:'fri6',  time:'14:00–16:00',label:'Deep work 2 — Python tutorial continue', type:'deep', note:'Python OOP — classes, modules, file I/O · build something small'},
-    { id:'fri7',  time:'16:00–18:00',label:'Information Technology', type:'class', note:'LR 8 — end of week, stay focused'},
-    { id:'fri8',  time:'18:00–19:00',label:'Dinner + break', type:'routine', note:'End of school week — you earned it'},
-    { id:'fri9',  time:'19:00–20:00',label:'Blender — 3D modelling', type:'deep', note:'Game assets or environment design'},
-    { id:'fri9b', time:'20:00–21:30',label:'Tech Crush — AI Learning', type:'deep', note:'AI session 8–9:30pm'},
-    { id:'fri11', time:'21:30–22:00',label:'Review week + plan weekend', type:'routine', note:'What did you build this week? What\'s left?'},
-    { id:'fri12', time:'22:00–23:00',label:'Wind-down', type:'rest', note:'Intentional IG time if needed — you earned it'},
-    { id:'fri13', time:'23:00',       label:'Sleep', type:'rest', note:'6 hrs — wake 5am'},
-  ],
-  Sat: [
-    { id:'sat0',  time:'5:00–5:30',  label:'Wake up + breakfast', type:'routine', note:'Slower morning — no rush'},
-    { id:'sat1',  time:'5:30–8:00',  label:'Deep work 1 — Secret project', type:'deep', note:'Longest session of the week — AI machine, no interruptions'},
-    { id:'sat2',  time:'8:00–9:30',  label:'Workout', type:'workout', note:'Longer session — weights + cardio'},
-    { id:'sat3',  time:'9:30–10:00', label:'Shower + meal prep', type:'routine', note:''},
-    { id:'sat4',  time:'10:00–12:00',label:'C++ tutorial — game systems', type:'deep', note:'Game loop, collision, physics basics · learncpp.com or Unreal C++ tutorial'},
-    { id:'sat5',  time:'12:00–13:00',label:'Lunch + rest', type:'routine', note:''},
-    { id:'sat6',  time:'13:00–15:00',label:'Deep work 2 — C language deep dive', type:'deep', note:'Memory management, pointers, structs · this unlocks everything in C++'},
-    { id:'sat7',  time:'15:00–17:00',label:'Music production + voice work', type:'deep', note:'Character voices + OST — game audio pipeline'},
-    { id:'sat8',  time:'17:00–18:00',label:'Free time / IG (intentional)', type:'routine', note:'Scheduled scroll — not reactive. 1 hour max'},
-    { id:'sat9',  time:'18:00–19:00',label:'Dinner + break', type:'routine', note:''},
-    { id:'sat10', time:'19:00–21:00',label:'Deep work 3 — JavaScript + SQL', type:'deep', note:'Build a full mini web app — JS frontend + SQL backend concept'},
-    { id:'sat11', time:'21:00–23:00',label:'Wind-down + week review', type:'rest', note:'Write what you built this week — track progress'},
-    { id:'sat12', time:'23:00',       label:'Sleep', type:'rest', note:'6 hrs — wake 5am'},
-  ],
-  Sun: [
-    { id:'sun0',  time:'5:00–6:00',  label:'Wake up + slow morning', type:'routine', note:'Journal, breakfast — reflect on the week'},
-    { id:'sun1',  time:'6:00–8:00',  label:'Deep work 1 — Secret project', type:'deep', note:'AI machine — integrate this week\'s learning'},
-    { id:'sun2',  time:'8:00–10:00', label:'Full week review — all subjects', type:'routine', note:'Go hardest subject first: CNS → Systems Programming → Digital Electronics → rest'},
-    { id:'sun3',  time:'10:00–12:00',label:'Game dev — engine + Blender', type:'deep', note:'Connect 3D assets to game engine — make something playable'},
-    { id:'sun4',  time:'12:00–13:00',label:'Lunch + rest', type:'routine', note:''},
-    { id:'sun5',  time:'13:00–15:00',label:'Deep work 2 — Python or C++ project', type:'deep', note:'Apply the week\'s tutorial progress to a real mini project'},
-    { id:'sun6',  time:'15:00–17:00',label:'Free time (intentional)', type:'routine', note:'Walk, rest, IG — no guilt, this is earned recovery'},
-    { id:'sun7',  time:'17:00–19:00',label:'Plan full week ahead', type:'routine', note:'Set language goals per day, assign CTF targets, note hardest upcoming classes'},
-    { id:'sun8',  time:'19:00–20:00',label:'Dinner + break', type:'routine', note:''},
-    { id:'sun9',  time:'20:00–21:00',label:'Music production — low intensity', type:'deep', note:'Creative wind-down — sounds, voices, ambience'},
-    { id:'sun10', time:'21:00–23:00',label:'Wind-down', type:'rest', note:'Prep for the week — pack bag, set alarm, no screens after 22:30'},
-    { id:'sun11', time:'23:00',       label:'Sleep', type:'rest', note:'6 hrs — wake 5am'},
-  ],
-};
+let activeDay=DAYS[new Date().getDay()===0?6:new Date().getDay()-1]||'Mon';
+let state={};
+try{state=JSON.parse(localStorage.getItem('csf_state')||'{}');}catch(e){}
+function save(){try{localStorage.setItem('csf_state',JSON.stringify(state));}catch(e){}}
+function totalDone(){return Object.values(state).filter(v=>v&&v.done).length;}
+function renderProgress(){document.getElementById('progress-pill').innerHTML='<b>'+totalDone()+'</b> done';}
 
-let activeDay = DAYS[new Date().getDay() === 0 ? 6 : new Date().getDay() - 1] || 'Mon';
-let state = JSON.parse(localStorage.getItem('csf_state') || '{}');
-
-function save() { localStorage.setItem('csf_state', JSON.stringify(state)); }
-
-function totalDone() {
-  return Object.values(state).filter(v => v && v.done).length;
-}
-
-function renderProgress() {
-  const n = totalDone();
-  document.getElementById('progress-pill').innerHTML = '<b>' + n + '</b> done';
-}
-
-function renderNav() {
-  const nav = document.getElementById('nav');
-  nav.innerHTML = '';
-  DAYS.forEach(d => {
-    const b = document.createElement('button');
-    b.className = 'day-btn' + (d === activeDay ? ' active' : '');
-    b.textContent = d;
-    b.onclick = () => { activeDay = d; renderNav(); renderBlocks(); };
+function renderNav(){
+  const nav=document.getElementById('nav');
+  nav.innerHTML='';
+  DAYS.forEach(d=>{
+    const b=document.createElement('button');
+    b.className='day-btn'+(d===activeDay?' active':'');
+    b.textContent=d;
+    b.onclick=()=>{activeDay=d;renderNav();renderBlocks();};
     nav.appendChild(b);
   });
 }
 
-function renderBlocks() {
-  const container = document.getElementById('blocks');
-  const items = SCHEDULE[activeDay] || [];
-  container.innerHTML = '';
-  items.forEach(item => {
-    const s = state[item.id] || {};
-    const done = !!s.done;
-    const userNote = s.note || '';
-    const open = !!s.open;
+function renderBlocks(){
+  const container=document.getElementById('blocks');
+  const items=SCHEDULE[activeDay]||[];
+  container.innerHTML='';
+  items.forEach(item=>{
+    const s=state[item.id]||{};
+    const done=!!s.done;
+    const open=!!s.open;
+    const customLabel=s.label||'';
+    const customNote=s.note||'';
+    const displayLabel=customLabel||item.label;
 
-    const block = document.createElement('div');
-    block.className = 'block b-' + item.type + (done ? ' done' : '');
-    block.innerHTML = `
+    const block=document.createElement('div');
+    block.className='block b-'+item.type+(done?' done':'');
+    block.innerHTML=`
       <div class="block-header">
         <div class="block-check"></div>
         <div class="block-main">
           <div class="block-time">${item.time}</div>
-          <div class="block-label">${item.label}</div>
-          ${item.note ? '<div class="block-note">' + item.note + '</div>' : ''}
+          <div class="block-label">${displayLabel}</div>
+          ${item.sub?'<div class="block-sub">'+item.sub+'</div>':''}
+          ${customNote?'<div class="block-note-preview">'+customNote.substring(0,70)+(customNote.length>70?'…':'')+'</div>':''}
         </div>
-        <button class="expand-btn" title="Add note">${open ? '▲' : '✎'}</button>
+        <button class="act-btn edit-btn" title="Edit">${open?'▲':'✎'}</button>
       </div>
-      <div class="block-notes-area ${open ? 'open' : ''}">
-        <textarea placeholder="Add your own note for this block…" rows="2">${userNote}</textarea>
+      <div class="block-expand ${open?'open':''}">
+        <div>
+          <div class="exp-label">EDIT TOPIC</div>
+          <input class="exp-input topic-input" placeholder="${item.label}" value="${customLabel}">
+        </div>
+        <div>
+          <div class="exp-label">YOUR NOTES</div>
+          <textarea class="exp-textarea note-input" placeholder="Add notes, key points, reminders…" rows="3">${customNote}</textarea>
+        </div>
       </div>
     `;
 
-    const check = block.querySelector('.block-check');
-    check.addEventListener('click', (e) => {
+    block.querySelector('.block-check').addEventListener('click',e=>{
       e.stopPropagation();
-      if (!state[item.id]) state[item.id] = {};
-      state[item.id].done = !state[item.id].done;
-      save();
-      renderBlocks();
-      renderProgress();
+      if(!state[item.id])state[item.id]={};
+      state[item.id].done=!state[item.id].done;
+      save();renderBlocks();renderProgress();
     });
 
-    const expandBtn = block.querySelector('.expand-btn');
-    const notesArea = block.querySelector('.block-notes-area');
-    expandBtn.addEventListener('click', (e) => {
+    const editBtn=block.querySelector('.edit-btn');
+    const expandEl=block.querySelector('.block-expand');
+    editBtn.addEventListener('click',e=>{
       e.stopPropagation();
-      if (!state[item.id]) state[item.id] = {};
-      state[item.id].open = !state[item.id].open;
+      if(!state[item.id])state[item.id]={};
+      state[item.id].open=!state[item.id].open;
       save();
-      notesArea.classList.toggle('open');
-      expandBtn.textContent = notesArea.classList.contains('open') ? '▲' : '✎';
+      expandEl.classList.toggle('open');
+      editBtn.textContent=expandEl.classList.contains('open')?'▲':'✎';
     });
 
-    const textarea = block.querySelector('textarea');
-    textarea.addEventListener('input', () => {
-      if (!state[item.id]) state[item.id] = {};
-      state[item.id].note = textarea.value;
+    block.querySelector('.topic-input').addEventListener('input',function(){
+      if(!state[item.id])state[item.id]={};
+      state[item.id].label=this.value;
+      block.querySelector('.block-label').textContent=this.value||item.label;
+      save();
+    });
+
+    block.querySelector('.note-input').addEventListener('input',function(){
+      if(!state[item.id])state[item.id]={};
+      state[item.id].note=this.value;
       save();
     });
 
@@ -474,24 +302,17 @@ function renderBlocks() {
   });
 }
 
-// theme
-const themBtn = document.getElementById('theme-btn');
-let dark = localStorage.getItem('csf_theme') !== 'light';
-function applyTheme() {
-  document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
-  themBtn.textContent = dark ? '🌙' : '☀️';
-  localStorage.setItem('csf_theme', dark ? 'dark' : 'light');
+const themBtn=document.getElementById('theme-btn');
+let dark=localStorage.getItem('csf_theme')!=='light';
+function applyTheme(){
+  document.documentElement.setAttribute('data-theme',dark?'dark':'light');
+  themBtn.textContent=dark?'🌙':'☀️';
+  localStorage.setItem('csf_theme',dark?'dark':'light');
 }
-themBtn.addEventListener('click', () => { dark = !dark; applyTheme(); });
+themBtn.addEventListener('click',()=>{dark=!dark;applyTheme();});
 applyTheme();
-
-renderNav();
-renderBlocks();
-renderProgress();
-
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('./sw.js').catch(() => {});
-}
+renderNav();renderBlocks();renderProgress();
+if('serviceWorker' in navigator){navigator.serviceWorker.register('./sw.js').catch(()=>{});}
 </script>
 </body>
 </html>
